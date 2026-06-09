@@ -1,4 +1,4 @@
-.PHONY: install db-up db-down schema seed serve test package clean
+.PHONY: install db-up db-down schema seed serve test eval eval-judge package clean
 
 VENV := .venv
 PY := $(VENV)/bin/python
@@ -31,6 +31,12 @@ serve:
 
 test:
 	$(VENV)/bin/pytest -q
+
+eval:
+	$(PY) -m evals.run_eval --k 5
+
+eval-judge:
+	$(PY) -m evals.run_eval --k 5 --judge
 
 package:
 	rm -rf build dist && mkdir -p dist

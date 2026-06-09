@@ -22,6 +22,8 @@ infra/*.tfstate
 infra/*.tfstate.*
 infra/.terraform.lock.hcl
 infra/tfplan
+# eval run output
+evals/.last_results.json
 # build
 dist/
 build/

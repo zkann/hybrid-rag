@@ -1,5 +1,5 @@
-"""Hybrid retrieval: vector (pgvector/HNSW) + keyword (Postgres FTS), fused
-with Reciprocal Rank Fusion.
+"""Retrieval: vector (pgvector/HNSW) + keyword (Postgres FTS), fused with
+Reciprocal Rank Fusion.
 
 Why hybrid: dense vector search captures meaning ("how do I guard a route")
 but misses rare exact tokens (an API symbol, an error code, a flag). Keyword
@@ -9,6 +9,9 @@ lists without needing the scores to be on the same scale:
     score(d) = sum_over_arms 1 / (rrf_k + rank_d_in_arm)
 
 so a doc ranked highly by either arm floats up, and docs ranked by both win.
+
+`retrieve(query, strategy=...)` exposes all three strategies (hybrid / vector /
+keyword) so the eval harness can compare them head to head.
 """
 
 from dataclasses import dataclass
@@ -56,29 +59,49 @@ def reciprocal_rank_fusion(rank_lists: list[list[int]], rrf_k: int) -> list[tupl
     return sorted(scores.items(), key=lambda kv: kv[1], reverse=True)
 
 
-def hybrid_search(query: str, top_k: int | None = None) -> list[Hit]:
-    s = get_settings()
-    top_k = top_k or s.top_k
-    qvec = embed_query(query)
-
-    with get_pool().connection() as conn, conn.cursor() as cur:
-        vec = _vector_ids(cur, qvec, s.candidate_k)
-        kw = _keyword_ids(cur, query, s.candidate_k)
-        fused = reciprocal_rank_fusion([vec, kw], s.rrf_k)[:top_k]
-        if not fused:
-            return []
-        ids = [cid for cid, _ in fused]
-        cur.execute(
-            "SELECT c.id, c.document_id, d.source, d.title, c.content "
-            "FROM chunks c JOIN documents d ON d.id = c.document_id "
-            "WHERE c.id = ANY(%s)",
-            (ids,),
-        )
-        rows = {r[0]: r for r in cur.fetchall()}
-
+def _hydrate(cur, ranked_ids: list[int], scores: dict[int, float]) -> list[Hit]:
+    if not ranked_ids:
+        return []
+    cur.execute(
+        "SELECT c.id, c.document_id, d.source, d.title, c.content "
+        "FROM chunks c JOIN documents d ON d.id = c.document_id "
+        "WHERE c.id = ANY(%s)",
+        (ranked_ids,),
+    )
+    rows = {r[0]: r for r in cur.fetchall()}
     hits: list[Hit] = []
-    for cid, score in fused:
+    for cid in ranked_ids:
         r = rows.get(cid)
         if r:
-            hits.append(Hit(cid, r[1], r[2], r[3], r[4], round(score, 6)))
+            hits.append(Hit(cid, r[1], r[2], r[3], r[4], round(scores.get(cid, 0.0), 6)))
     return hits
+
+
+def retrieve(query: str, top_k: int | None = None, strategy: str = "hybrid") -> list[Hit]:
+    """strategy: 'hybrid' (default) | 'vector' | 'keyword'."""
+    s = get_settings()
+    top_k = top_k or s.top_k
+    strategy = strategy.lower()
+
+    with get_pool().connection() as conn, conn.cursor() as cur:
+        if strategy == "keyword":
+            ranked = _keyword_ids(cur, query, max(top_k, s.candidate_k))[:top_k]
+            scores = {cid: 1.0 / (i + 1) for i, cid in enumerate(ranked)}
+        elif strategy == "vector":
+            qvec = embed_query(query)
+            ranked = _vector_ids(cur, qvec, max(top_k, s.candidate_k))[:top_k]
+            scores = {cid: 1.0 / (i + 1) for i, cid in enumerate(ranked)}
+        elif strategy == "hybrid":
+            qvec = embed_query(query)
+            vec = _vector_ids(cur, qvec, s.candidate_k)
+            kw = _keyword_ids(cur, query, s.candidate_k)
+            fused = reciprocal_rank_fusion([vec, kw], s.rrf_k)[:top_k]
+            ranked = [cid for cid, _ in fused]
+            scores = dict(fused)
+        else:
+            raise ValueError(f"unknown strategy: {strategy!r}")
+        return _hydrate(cur, ranked, scores)
+
+
+def hybrid_search(query: str, top_k: int | None = None) -> list[Hit]:
+    return retrieve(query, top_k=top_k, strategy="hybrid")

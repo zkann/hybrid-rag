@@ -23,7 +23,11 @@ score(doc) = sum over arms of  1 / (rrf_k + rank_in_arm)
 ```
 
 A passage ranked highly by either arm rises; a passage both arms agree on wins.
-It is simple, has one parameter, and beats picking one retriever.
+It is simple and has one parameter. Whether it actually beats a single retriever
+depends on your corpus, which is the point of the eval harness below: on the
+clean prose corpus here, dense retrieval alone turned out to be competitive, and
+hybrid earns its keep mainly on corpora full of rare exact tokens. Measure, don't
+assume.
 
 ## Architecture
 
@@ -97,7 +101,31 @@ python -m scripts.ingest_docs --url https://example.com/docs/page
 make test
 ```
 
-Covers the fusion math and the chunker (pure, no DB or network).
+Covers the fusion math, the chunker, and the eval metrics (pure, no DB or network).
+
+## Evaluation
+
+`evals/` measures retrieval and answer quality instead of trusting vibes.
+`make eval` runs a labeled query set through all three strategies and reports
+document-level recall@k, hit@k, MRR, and nDCG@k; `make eval-judge` adds an
+LLM-as-judge pass for answer faithfulness and relevance.
+
+Results on the sample corpus (FastAPI docs, 28 queries, k=5):
+
+| strategy | recall@5 | MRR | nDCG@5 |
+|---|---|---|---|
+| hybrid | 0.964 | 0.911 | 0.919 |
+| vector | 0.982 | 1.000 | 0.986 |
+| keyword | 0.500 | 0.449 | 0.451 |
+
+Honest finding: on this clean, well-written corpus, dense retrieval alone is
+strong enough that hybrid does not beat it. The keyword arm mostly adds noise on
+paraphrase queries, and even on exact-symbol queries the embedding model already
+retrieves perfectly. Hybrid earns its keep on corpora full of rare exact tokens
+that embeddings garble (error codes, part numbers, identifiers, jargon), which
+this corpus is not. The harness exists to make that call per corpus, with
+weighted or query-adaptive fusion as the next tuning lever, rather than
+cargo-culting hybrid. Details in `evals/README.md`.
 
 ## Deploy
 

@@ -1,0 +1,28 @@
+{"id": "cors", "question": "How do I enable CORS in FastAPI?", "relevant_sources": ["fastapi/tutorial/cors.md"]}
+{"id": "lifespan", "question": "How do I run code on application startup and shutdown?", "relevant_sources": ["fastapi/advanced/events.md"]}
+{"id": "background", "question": "How do I run work in the background after returning a response?", "relevant_sources": ["fastapi/tutorial/background-tasks.md"]}
+{"id": "request-body", "question": "How do I declare a request body with a Pydantic model?", "relevant_sources": ["fastapi/tutorial/body.md"]}
+{"id": "dep-yield", "question": "How do I use a dependency with yield to manage a database session?", "relevant_sources": ["fastapi/tutorial/dependencies/dependencies-with-yield.md"]}
+{"id": "oauth2-jwt", "question": "How do I get the current user from an OAuth2 JWT token?", "relevant_sources": ["fastapi/tutorial/security/oauth2-jwt.md", "fastapi/tutorial/security/get-current-user.md"]}
+{"id": "files", "question": "How do I handle file uploads?", "relevant_sources": ["fastapi/tutorial/request-files.md"]}
+{"id": "path-numeric", "question": "How do I add numeric validations like greater-than to path parameters?", "relevant_sources": ["fastapi/tutorial/path-params-numeric-validations.md"]}
+{"id": "errors", "question": "How do I return a custom HTTP error response?", "relevant_sources": ["fastapi/tutorial/handling-errors.md"]}
+{"id": "testing", "question": "How do I write tests for a FastAPI application?", "relevant_sources": ["fastapi/tutorial/testing.md"]}
+{"id": "static", "question": "How do I serve static files?", "relevant_sources": ["fastapi/tutorial/static-files.md"]}
+{"id": "routers", "question": "How do I split a large application into multiple routers?", "relevant_sources": ["fastapi/tutorial/bigger-applications.md"]}
+{"id": "websockets", "question": "How do I use WebSockets?", "relevant_sources": ["fastapi/advanced/websockets.md"]}
+{"id": "settings", "question": "How do I read configuration from environment variables with Pydantic settings?", "relevant_sources": ["fastapi/advanced/settings.md", "fastapi/environment-variables.md"]}
+{"id": "status-code", "question": "How do I set the HTTP status code of a response?", "relevant_sources": ["fastapi/tutorial/response-status-code.md", "fastapi/advanced/response-change-status-code.md"]}
+{"id": "streaming", "question": "How do I return a streaming response?", "relevant_sources": ["fastapi/advanced/stream-data.md", "fastapi/tutorial/server-sent-events.md"]}
+{"id": "query-validation", "question": "How do I add string length validations to query parameters?", "relevant_sources": ["fastapi/tutorial/query-params-str-validations.md"]}
+{"id": "sql", "question": "How do I connect FastAPI to a SQL database?", "relevant_sources": ["fastapi/tutorial/sql-databases.md"]}
+{"id": "response-model", "question": "How do I control the response shape with a response model?", "relevant_sources": ["fastapi/tutorial/response-model.md"]}
+{"id": "middleware", "question": "How do I add custom middleware to process every request?", "relevant_sources": ["fastapi/tutorial/middleware.md", "fastapi/advanced/middleware.md"]}
+{"id": "sym-backgroundtasks", "question": "BackgroundTasks", "relevant_sources": ["fastapi/tutorial/background-tasks.md"]}
+{"id": "sym-httpexception", "question": "raise HTTPException status_code", "relevant_sources": ["fastapi/tutorial/handling-errors.md"]}
+{"id": "sym-jsonable", "question": "jsonable_encoder", "relevant_sources": ["fastapi/tutorial/encoder.md"]}
+{"id": "sym-oauth2bearer", "question": "OAuth2PasswordBearer tokenUrl", "relevant_sources": ["fastapi/tutorial/security/first-steps.md", "fastapi/tutorial/security/oauth2-jwt.md"]}
+{"id": "sym-corsmw", "question": "CORSMiddleware allow_origins", "relevant_sources": ["fastapi/tutorial/cors.md"]}
+{"id": "sym-uploadfile", "question": "UploadFile File", "relevant_sources": ["fastapi/tutorial/request-files.md"]}
+{"id": "sym-responsemodel", "question": "response_model_exclude_unset", "relevant_sources": ["fastapi/tutorial/response-model.md"]}
+{"id": "sym-wsdisconnect", "question": "WebSocketDisconnect", "relevant_sources": ["fastapi/advanced/websockets.md"]}
