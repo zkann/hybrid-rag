@@ -1,0 +1,20 @@
+.venv/
+venv/
+__pycache__/
+*.pyc
+.env
+.cache/
+docs_corpus/*
+!docs_corpus/.gitkeep
+.pytest_cache/
+*.egg-info/
+# terraform
+infra/.terraform/
+infra/*.tfstate
+infra/*.tfstate.*
+infra/.terraform.lock.hcl
+infra/tfplan
+# build
+dist/
+build/
+*.zip
