@@ -47,6 +47,19 @@ embedding model (codes, identifiers, jargon). The value here is the measurement:
 it tells you, for this corpus, you could ship vector-only, and the next lever if
 you needed hybrid to win would be weighted or query-adaptive fusion.
 
+### Answer quality (LLM-as-judge, 28 queries, hybrid retrieval)
+
+| metric | score (1-5) |
+|---|---|
+| faithfulness | 4.96 |
+| answer_relevance | 5.00 |
+
+The generation half holds up: answers are grounded in the retrieved passages
+(near-perfect faithfulness, so essentially no hallucination beyond context) and
+directly address the question. Combined with the guardrail that makes `/ask`
+refuse out-of-context questions, the system answers what it can support and
+declines what it can't.
+
 ```bash
 make eval            # retrieval metrics, hybrid vs vector vs keyword
 make eval-judge      # + LLM-as-judge answer quality (spends tokens)

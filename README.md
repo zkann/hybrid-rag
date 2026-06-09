@@ -127,6 +127,10 @@ this corpus is not. The harness exists to make that call per corpus, with
 weighted or query-adaptive fusion as the next tuning lever, rather than
 cargo-culting hybrid. Details in `evals/README.md`.
 
+Answer quality (LLM-as-judge over the same 28 queries, hybrid retrieval):
+**faithfulness 4.96/5, answer relevance 5.00/5**, grounded generation with
+essentially no hallucination beyond the retrieved context.
+
 ## Deploy
 
 `make package` builds a Lambda zip; the container path and full Terraform
