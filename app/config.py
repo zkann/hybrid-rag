@@ -16,7 +16,7 @@ class Settings(BaseSettings):
     # Generation provider: "anthropic" (default) or "openai".
     gen_provider: str = "anthropic"
     anthropic_model: str = "claude-haiku-4-5-20251001"
-    openai_model: str = "gpt-4o-mini"
+    openai_model: str = "gpt-5.4-mini"
 
     # Chunking (token-based, via tiktoken cl100k_base).
     chunk_tokens: int = 512

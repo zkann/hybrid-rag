@@ -2,7 +2,15 @@
 venv/
 __pycache__/
 *.pyc
+# secrets / local env (keep the example)
 .env
+.env.*
+!.env.example
+# editor swap / backup files
+*.swp
+*.swo
+*.swn
+*~
 .cache/
 docs_corpus/*
 !docs_corpus/.gitkeep
